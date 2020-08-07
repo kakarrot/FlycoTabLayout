@@ -3,13 +3,16 @@ package com.flyco.tablayoutsamples.ui;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.flyco.tablayout.SlidingTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
@@ -18,6 +21,7 @@ import com.flyco.tablayoutsamples.R;
 import com.flyco.tablayoutsamples.utils.ViewFindUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SlidingTabActivity extends AppCompatActivity implements OnTabSelectListener {
     private Context mContext = this;
@@ -39,8 +43,8 @@ public class SlidingTabActivity extends AppCompatActivity implements OnTabSelect
 
 
         View decorView = getWindow().getDecorView();
-        ViewPager vp = ViewFindUtils.find(decorView, R.id.vp);
-        mAdapter = new MyPagerAdapter(getSupportFragmentManager());
+        ViewPager2 vp = ViewFindUtils.find(decorView, R.id.vp);
+        mAdapter = new MyPagerAdapter(this);
         vp.setAdapter(mAdapter);
 
         /** 默认 */
@@ -64,17 +68,17 @@ public class SlidingTabActivity extends AppCompatActivity implements OnTabSelect
         /** indicator圆角色块 */
         SlidingTabLayout tabLayout_10 = ViewFindUtils.find(decorView, R.id.tl_10);
 
-        tabLayout_1.setViewPager(vp);
-        tabLayout_2.setViewPager(vp);
+        tabLayout_1.setViewPager(vp, Arrays.asList(mTitles));
+        tabLayout_2.setViewPager(vp, Arrays.asList(mTitles));
         tabLayout_2.setOnTabSelectListener(this);
-        tabLayout_3.setViewPager(vp);
-        tabLayout_4.setViewPager(vp);
-        tabLayout_5.setViewPager(vp);
-        tabLayout_6.setViewPager(vp);
-        tabLayout_7.setViewPager(vp, mTitles);
-        tabLayout_8.setViewPager(vp, mTitles, this, mFragments);
-        tabLayout_9.setViewPager(vp);
-        tabLayout_10.setViewPager(vp);
+        tabLayout_3.setViewPager(vp, Arrays.asList(mTitles));
+        tabLayout_4.setViewPager(vp, Arrays.asList(mTitles));
+        tabLayout_5.setViewPager(vp, Arrays.asList(mTitles));
+        tabLayout_6.setViewPager(vp, Arrays.asList(mTitles));
+        tabLayout_7.setViewPager(vp, Arrays.asList(mTitles));
+        //tabLayout_8.setViewPager(vp, mTitles, this, mFragments);
+        tabLayout_9.setViewPager(vp, Arrays.asList(mTitles));
+        tabLayout_10.setViewPager(vp, Arrays.asList(mTitles));
 
         vp.setCurrentItem(4);
 
@@ -117,24 +121,20 @@ public class SlidingTabActivity extends AppCompatActivity implements OnTabSelect
         Toast.makeText(mContext, "onTabReselect&position--->" + position, Toast.LENGTH_SHORT).show();
     }
 
-    private class MyPagerAdapter extends FragmentPagerAdapter {
-        public MyPagerAdapter(FragmentManager fm) {
-            super(fm);
+    private class MyPagerAdapter extends FragmentStateAdapter {
+        public MyPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
         }
 
+        @NonNull
         @Override
-        public int getCount() {
-            return mFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mTitles[position];
-        }
-
-        @Override
-        public Fragment getItem(int position) {
+        public Fragment createFragment(int position) {
             return mFragments.get(position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mFragments.size();
         }
     }
 }

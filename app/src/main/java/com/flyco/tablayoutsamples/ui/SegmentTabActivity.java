@@ -2,12 +2,15 @@ package com.flyco.tablayoutsamples.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
@@ -69,8 +72,8 @@ public class SegmentTabActivity extends AppCompatActivity {
     }
 
     private void tl_3() {
-        final ViewPager vp_3 = ViewFindUtils.find(mDecorView, R.id.vp_2);
-        vp_3.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        final ViewPager2 vp_3 = ViewFindUtils.find(mDecorView, R.id.vp_2);
+        vp_3.setAdapter(new MyPagerAdapter(this));
 
         mTabLayout_3.setTabData(mTitles_3);
         mTabLayout_3.setOnTabSelectListener(new OnTabSelectListener() {
@@ -84,43 +87,31 @@ public class SegmentTabActivity extends AppCompatActivity {
             }
         });
 
-        vp_3.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
+        vp_3.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 mTabLayout_3.setCurrentTab(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
             }
         });
         vp_3.setCurrentItem(1);
     }
 
-    private class MyPagerAdapter extends FragmentPagerAdapter {
-        public MyPagerAdapter(FragmentManager fm) {
-            super(fm);
+    private class MyPagerAdapter extends FragmentStateAdapter {
+
+
+        public MyPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
+            super(fragmentActivity);
         }
 
+        @NonNull
         @Override
-        public int getCount() {
-            return mFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mTitles_3[position];
-        }
-
-        @Override
-        public Fragment getItem(int position) {
+        public Fragment createFragment(int position) {
             return mFragments.get(position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mFragments.size();
         }
     }
 }
